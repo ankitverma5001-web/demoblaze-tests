@@ -1,4 +1,4 @@
-// Author - AnkitQA
+// Author - AnkitQA api
 // Network-level tests: observe, mock, and fail the demoblaze REST API
 // (https://api.demoblaze.com) instead of driving full UI flows.
 // Endpoints/payload shapes below verified live against js/index.js, not assumed.
