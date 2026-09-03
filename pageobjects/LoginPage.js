@@ -15,16 +15,21 @@ class LoginPage {
         await this.username.fill(username);
         await this.password.fill(password);
 
-        const dialogPromise = this.page.waitForEvent('dialog', { timeout: this.dialogTimeout }).catch(() => null);
-        await this.submitButton.click();
+        // Accept inside the event handler itself (not captured-then-accepted-later) -
+        // with a mocked/instant network response the dialog can open and get
+        // auto-dismissed by Playwright before a deferred accept() runs.
+        let message = null;
+        const dialogHandled = new Promise((resolve) => {
+            this.page.once('dialog', async (dialog) => {
+                message = dialog.message();
+                await dialog.accept();
+                resolve();
+            });
+        });
 
-        const dialog = await dialogPromise;
-        if (dialog) {
-            const message = dialog.message();
-            await dialog.accept();
-            return message;
-        }
-        return null;
+        await this.submitButton.click();
+        await Promise.race([dialogHandled, this.page.waitForTimeout(this.dialogTimeout)]);
+        return message;
     }
 }
 module.exports = LoginPage;
