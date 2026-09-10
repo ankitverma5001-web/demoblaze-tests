@@ -1,6 +1,6 @@
 # demoblaze-tests
 
-Playwright + Cucumber QA automation for [demoblaze.com](https://www.demoblaze.com/index.html), a public e-commerce demo site.
+Playwright + Cucumber QA automation for [demoblaze.com](https://demoblaze.com/index.html), a public e-commerce demo site.
 
 ## Setup
 
@@ -10,11 +10,19 @@ npx playwright install
 cp .env.example .env   # fill in a real (throwaway) demoblaze account
 ```
 
+Optional:
+
+```
+# Override only if your environment needs a different reachable host
+DEMOBLAZE_BASE_URL=https://demoblaze.com
+```
+
 ## Running tests
 
 ```
 npx playwright test                                 # full Playwright suite (chrome/msedge/firefox)
 npx playwright test tests/smoke.spec.js --reporter=line   # single file
+npx playwright test tests/smoke.spec.js --headed --reporter=line
 npx cucumber-js                                      # Cucumber/BDD suite under features/
 ```
 
@@ -36,6 +44,7 @@ Run something other than the default suite by overriding the command:
 
 ```
 docker compose run --rm tests npx playwright test tests/smoke.spec.js --reporter=line
+docker compose run --rm tests npx playwright test tests/smoke.spec.js --headed --reporter=line
 docker compose run --rm tests npx cucumber-js
 ```
 
@@ -59,3 +68,5 @@ specs/          markdown test plans
 
 - demoblaze's login/signup use native `alert()` popups for success/failure messages — Playwright auto-dismisses these by default, so tests that need to read the message must register a `page.on('dialog', ...)` handler before submitting.
 - Login/signup tests use a throwaway test account via `DEMOBLAZE_USERNAME`/`DEMOBLAZE_PASSWORD` in `.env` — never commit real values.
+- The suite defaults to `https://demoblaze.com`; set `DEMOBLAZE_BASE_URL` if your runner can only reach a different hostname.
+- If Dockerized runs hit DNS failures, `docker-compose.yml` already pins public resolvers (`1.1.1.1`, `8.8.8.8`); for CI runners, ensure outbound DNS/network access to `demoblaze.com`.

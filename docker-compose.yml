@@ -1,8 +1,12 @@
 services:
   tests:
     build: .
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     environment:
       CI: "true"
+      DEMOBLAZE_BASE_URL: ${DEMOBLAZE_BASE_URL:-https://demoblaze.com}
       # Populated from a .env file at the repo root if one exists (see
       # .env.example); safe to leave unset for suites that don't log in.
       DEMOBLAZE_USERNAME: ${DEMOBLAZE_USERNAME:-}

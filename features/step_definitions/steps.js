@@ -3,6 +3,7 @@ require('dotenv').config();
 const { Given, When, Then } = require('@cucumber/cucumber');
 const { expect } = require('@playwright/test');
 const POManager = require('../../pageobjects/POManager');
+const { buildStoreUrl } = require('../../config/demoblaze');
 
 // Verified live product IDs used by the smoke scenarios.
 const PRODUCT_IDS = {
@@ -15,7 +16,7 @@ const PRODUCT_IDS = {
 Given('user opens the demoblaze store', async function () {
 
     this.poManager = new POManager(this.page);
-    await this.page.goto('https://www.demoblaze.com/index.html');
+    await this.page.goto(buildStoreUrl('/index.html'));
 });
 
 Then('the product store branding should be visible', async function () {

@@ -1,5 +1,6 @@
 // Author - AnkitQA
 const { expect } = require('@playwright/test');
+const { buildStoreUrl } = require('../config/demoblaze');
 
 class HomePage {
 
@@ -12,7 +13,7 @@ class HomePage {
     }
 
     async navigate() {
-        await this.page.goto('https://www.demoblaze.com/index.html');
+        await this.page.goto(buildStoreUrl('/index.html'));
     }
 
     async verifyLoaded() {

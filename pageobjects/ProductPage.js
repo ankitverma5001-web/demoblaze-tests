@@ -1,5 +1,6 @@
 // Author - AnkitQA
 const { expect } = require('@playwright/test');
+const { buildStoreUrl } = require('../config/demoblaze');
 
 class ProductPage {
 
@@ -11,7 +12,7 @@ class ProductPage {
     }
 
     async navigate(productId) {
-        await this.page.goto(`https://www.demoblaze.com/prod.html?idp_=${productId}`);
+        await this.page.goto(buildStoreUrl(`/prod.html?idp_=${productId}`));
         await this.addToCartButton.waitFor({ state: 'visible' });
     }
 

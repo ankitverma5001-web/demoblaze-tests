@@ -1,5 +1,6 @@
 // @ts-check
 const { defineConfig } = require('@playwright/test');
+const { baseUrl } = require('./config/demoblaze');
 
 module.exports = defineConfig({
   testDir: './tests',
@@ -9,7 +10,7 @@ module.exports = defineConfig({
     timeout: 20 * 1000,
   },
   use: {
-    baseURL: 'https://www.demoblaze.com',
+    baseURL: baseUrl,
     headless: !!process.env.CI,
     trace: 'on-first-retry',
     video: 'off',
