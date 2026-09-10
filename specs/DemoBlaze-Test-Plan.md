@@ -2,7 +2,7 @@
 
 ## Application Overview
 
-DemoBlaze (https://www.demoblaze.com) is a public e-commerce demo site for phones, laptops, and monitors. It supports account signup/login, browsing products, adding items to a server-side cart, and placing an order through a modal checkout form. All flows below use native browser `alert()`/`confirm()` dialogs for feedback — see `demoblaze-domain` skill for the dialog-handling implications on automation.
+DemoBlaze (https://demoblaze.com) is a public e-commerce demo site for phones, laptops, and monitors. It supports account signup/login, browsing products, adding items to a server-side cart, and placing an order through a modal checkout form. All flows below use native browser `alert()`/`confirm()` dialogs for feedback — see `demoblaze-domain` skill for the dialog-handling implications on automation.
 
 ## Test Scenarios
 
