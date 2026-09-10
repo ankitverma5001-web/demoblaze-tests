@@ -117,3 +117,77 @@ DemoBlaze (https://www.demoblaze.com) is a public e-commerce demo site for phone
 - Category filter links (Phones/Laptops/Monitors) — behavior not yet explored
 - Whether browsing/cart/checkout require being logged in, or work anonymously
 - Login with a username that doesn't exist at all (distinct from "wrong password")
+
+### 4. API & Network Layer
+
+**Seed:** `tests/api-network.spec.js`
+
+#### 4.1. GET /entries returns the product catalog
+
+**File:** `tests/api-network.spec.js`
+
+**Steps:**
+  1. Navigate to the home page and intercept the GET `/entries` API call
+    - expect: Response status is 200 with `Content-Type: application/json`
+  2. Parse the JSON response body
+    - expect: Response contains an `Items` array with products (each having `id`, `title`, `price`, `desc`, `cat`, `img`)
+  3. Count the rendered product cards on the page
+    - expect: Card count matches the length of `Items` array in the API response
+
+#### 4.2. POST /login encodes password in base64 (security check)
+
+**File:** `tests/api-network.spec.js`
+
+**Steps:**
+  1. Open the Login modal and intercept the POST `/login` request
+  2. Enter username `user` and password `pass123` (plain text in UI)
+    - expect: The intercepted request body contains password base64-encoded, never in plain text
+    - expect: The request succeeds with 200 status and returns an auth token
+
+#### 4.3. POST /login with invalid credentials returns error
+
+**File:** `tests/api-network.spec.js`
+
+**Steps:**
+  1. Intercept POST `/login` with invalid username/password
+    - expect: Response status is 400 (Bad Request) or 401 (Unauthorized)
+  2. Attempt the failed login via UI
+    - expect: An error alert is shown (e.g., "Wrong password." or user not found)
+
+#### 4.4. Mocking /entries injects test data (network override)
+
+**File:** `tests/api-network.spec.js`
+
+**Steps:**
+  1. Use `page.route()` to mock the GET `/entries` response with custom product data (e.g., a product with title "QA Mocked Phone XL")
+  2. Navigate to home page
+    - expect: The injected product appears in the product list on the page, proving the mock was applied
+
+#### 4.5. Aborting /entries fails the page load (network error simulation)
+
+**File:** `tests/api-network.spec.js`
+
+**Steps:**
+  1. Use `page.route()` to abort the GET `/entries` request (e.g., `route.abort('failed')`)
+  2. Attempt to navigate to home page
+    - expect: The page fails to load products (no cards rendered or error state displayed)
+
+#### 4.6. POST /check validates an active session
+
+**File:** `tests/api-network.spec.js`
+
+**Steps:**
+  1. Log in via the UI and intercept the POST `/check` request
+    - expect: Response status is 200, confirming the session is valid
+  2. Use an invalid or expired auth token in a POST `/check` call
+    - expect: Response status is 401 or 403, indicating unauthorized/session expired
+
+#### 4.7. POST /addtocart requires authentication
+
+**File:** `tests/api-network.spec.js`
+
+**Steps:**
+  1. Intercept the POST `/addtocart` request from a logged-in user adding an item to cart
+    - expect: Request includes auth token, response status is 200, item is added successfully
+  2. Attempt POST `/addtocart` without a valid token
+    - expect: Response status is 401, cart item is not added

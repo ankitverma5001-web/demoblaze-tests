@@ -1,0 +1,14 @@
+services:
+  tests:
+    build: .
+    environment:
+      CI: "true"
+      # Populated from a .env file at the repo root if one exists (see
+      # .env.example); safe to leave unset for suites that don't log in.
+      DEMOBLAZE_USERNAME: ${DEMOBLAZE_USERNAME:-}
+      DEMOBLAZE_PASSWORD: ${DEMOBLAZE_PASSWORD:-}
+    volumes:
+      - ./playwright-report:/app/playwright-report
+      - ./test-results:/app/test-results
+      - ./allure-results:/app/allure-results
+    command: npx playwright test

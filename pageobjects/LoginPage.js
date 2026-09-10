@@ -8,7 +8,29 @@ class LoginPage {
         this.username = page.locator('#loginusername');
         this.password = page.locator('#loginpassword');
         this.submitButton = page.locator("button[onclick='logIn()']");
+        // Signup modal fields
+        this.signupUsername = page.locator('#sign-username');
+        this.signupPassword = page.locator('#sign-password');
+        this.signupButton = page.locator("button[onclick='register()']");
         this.dialogTimeout = 1500;
+    }
+
+    async signup(username, password) {
+        await this.signupUsername.fill(username);
+        await this.signupPassword.fill(password);
+
+        let message = null;
+        const dialogHandled = new Promise((resolve) => {
+            this.page.once('dialog', async (dialog) => {
+                message = dialog.message();
+                await dialog.accept();
+                resolve();
+            });
+        });
+
+        await this.signupButton.click();
+        await Promise.race([dialogHandled, this.page.waitForTimeout(this.dialogTimeout)]);
+        return message;
     }
 
     async login(username, password) {

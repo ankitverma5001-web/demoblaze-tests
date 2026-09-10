@@ -27,9 +27,24 @@ class HomePage {
         await this.cartLink.click();
     }
 
+    async openSignup() {
+        await this.signupLink.click();
+    }
+
+    async logout() {
+        await this.page.locator('#logout2').click();
+    }
+
     async verifyLoggedInAs(username) {
         await expect(this.page.locator('#nameofuser')).toHaveText(`Welcome ${username}`, { timeout: 15000 });
         await expect(this.page.locator('#logout2')).toBeVisible();
+    }
+
+    async verifyLoggedOut() {
+        await expect(this.loginLink).toBeVisible();
+        await expect(this.signupLink).toBeVisible();
+        await expect(this.page.locator('#logout2')).not.toBeVisible();
+        await expect(this.page.locator('#nameofuser')).not.toBeVisible();
     }
 }
 module.exports = HomePage;

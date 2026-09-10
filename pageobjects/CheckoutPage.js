@@ -24,17 +24,25 @@ class CheckoutPage {
         await this.year.fill(year);
     }
 
-    // purchaseOrder() shows a custom SweetAlert confirmation div (NOT a native
-    // dialog) with the order Id/Amount/Card/Name/Date, then redirects to the
-    // home page once its "OK" button is clicked. Verified live — see
-    // demoblaze-domain skill for how this differs from signup/login/add-to-cart,
-    // which do use native alert().
     async purchase() {
-        await this.purchaseButton.click();
+        let dialogMessage;
+        this.page.once('dialog', async (dialog) => {
+            dialogMessage = dialog.message();
+            await dialog.accept();
+        });
+
+        await this.purchaseButton.waitFor({ state: 'visible' });
+        await this.purchaseButton.dispatchEvent('click');
+
+        if (dialogMessage) {
+            return { type: 'validation', message: dialogMessage };
+        }
+
+        // If no dialog, wait for SweetAlert confirmation
         await this.confirmation.waitFor({ state: 'visible', timeout: 15000 });
         const message = await this.confirmationHeading.textContent();
         await this.confirmButton.click();
-        return message;
+        return { type: 'success', message };
     }
 }
 module.exports = CheckoutPage;

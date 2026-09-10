@@ -25,5 +25,16 @@ class CartPage {
     async placeOrder() {
         await this.placeOrderButton.click();
     }
+
+    async deleteItem(productName) {
+        const row = this.rows.filter({ hasText: productName });
+        const deleteLink = row.locator('a:has-text("Delete")');
+        await deleteLink.click();
+        await this.page.waitForTimeout(500); // Wait for AJAX to complete
+    }
+
+    async verifyCartEmpty() {
+        await expect(this.rows).toHaveCount(0);
+    }
 }
 module.exports = CartPage;

@@ -18,6 +18,27 @@ npx playwright test tests/smoke.spec.js --reporter=line   # single file
 npx cucumber-js                                      # Cucumber/BDD suite under features/
 ```
 
+## Running tests in Docker (no local Node/browsers needed)
+
+Requires only [Docker](https://docs.docker.com/get-docker/) installed.
+
+```
+cp .env.example .env   # optional -- only needed for login/signup tests
+docker compose up --build
+```
+
+That builds the image (installs deps + real Chrome/Edge/Firefox builds inside
+the container) and runs the full Playwright suite. Reports land back on your
+host in `playwright-report/`, `test-results/`, and `allure-results/` via
+bind-mounted volumes -- open `playwright-report/index.html` afterwards.
+
+Run something other than the default suite by overriding the command:
+
+```
+docker compose run --rm tests npx playwright test tests/smoke.spec.js --reporter=line
+docker compose run --rm tests npx cucumber-js
+```
+
 ## Reports
 
 ```
